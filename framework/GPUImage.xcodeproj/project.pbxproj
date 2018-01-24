@@ -350,6 +350,7 @@
 		BCFF46FC1CBAF85000A0C521 /* TransformOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFF46FB1CBAF85000A0C521 /* TransformOperation.swift */; };
 		BCFF46FE1CBB0C1F00A0C521 /* AverageColorExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFF46FD1CBB0C1F00A0C521 /* AverageColorExtractor.swift */; };
 		BCFF47081CBB443B00A0C521 /* CameraConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFF47071CBB443B00A0C521 /* CameraConversion.swift */; };
+		EA575D2820189FF40071FF61 /* ShaderConverter.sh in Resources */ = {isa = PBXBuildFile; fileRef = EA575D2720189FF40071FF61 /* ShaderConverter.sh */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -686,6 +687,7 @@
 		BCFF46FF1CBB0D8900A0C521 /* AverageColor_GL.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = AverageColor_GL.fsh; path = Source/Operations/Shaders/AverageColor_GL.fsh; sourceTree = "<group>"; };
 		BCFF47001CBB0D8900A0C521 /* AverageColor.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = AverageColor.vsh; path = Source/Operations/Shaders/AverageColor.vsh; sourceTree = "<group>"; };
 		BCFF47071CBB443B00A0C521 /* CameraConversion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CameraConversion.swift; path = Source/CameraConversion.swift; sourceTree = "<group>"; };
+		EA575D2720189FF40071FF61 /* ShaderConverter.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = ShaderConverter.sh; path = Source/Operations/Shaders/ShaderConverter.sh; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1171,6 +1173,7 @@
 		BCD1B1461C66A8A7001F2BDC /* Operations */ = {
 			isa = PBXGroup;
 			children = (
+				EA575D2720189FF40071FF61 /* ShaderConverter.sh */,
 				BCB279E71C8D0BA30013E213 /* BasicOperation.swift */,
 				BC91EDCE1C91E92000C704A8 /* OneInput.vsh */,
 				BC1E12F51C9F2FD7008F844F /* TwoInput.vsh */,
@@ -1335,6 +1338,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA575D2820189FF40071FF61 /* ShaderConverter.sh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
