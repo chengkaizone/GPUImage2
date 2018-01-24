@@ -19,7 +19,7 @@ extension SerialDispatch {
 #else
 
     public var standardProcessingQueue:DispatchQueue {
-    if #available(iOS 10, OSX 10.10, *) {
+    if #available(iOS 8.0, OSX 10.10, *) {
             return DispatchQueue.global(qos: .default)
     } else {
             return DispatchQueue.global(priority: .default)
@@ -27,7 +27,7 @@ extension SerialDispatch {
     }
     
     public var lowProcessingQueue:DispatchQueue {
-    if #available(iOS 10, OSX 10.10, *) {
+    if #available(iOS 8.0, OSX 10.10, *) {
             return DispatchQueue.global(qos: .background)
     } else {
             return DispatchQueue.global(priority: .low)

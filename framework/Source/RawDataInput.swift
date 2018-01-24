@@ -31,17 +31,22 @@ public enum PixelFormat {
 // TODO: Replace with texture caches where appropriate
 public class RawDataInput: ImageSource {
     public let targets = TargetContainer()
+    // MARK: - PR #30
+    private var privatePixelFormat = PixelFormat.rgba
     
     public init() {
         
     }
 
     public func uploadBytes(_ bytes:[UInt8], size:Size, pixelFormat:PixelFormat, orientation:ImageOrientation = .portrait) {
+        privatePixelFormat = pixelFormat == .luminance ? PixelFormat.rgba : pixelFormat
         let dataFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithProperties(orientation:orientation, size:GLSize(size), textureOnly:true, internalFormat:pixelFormat.toGL(), format:pixelFormat.toGL())
 
         glActiveTexture(GLenum(GL_TEXTURE1))
         glBindTexture(GLenum(GL_TEXTURE_2D), dataFramebuffer.texture)
-        glTexImage2D(GLenum(GL_TEXTURE_2D), 0, GL_RGBA, size.glWidth(), size.glHeight(), 0, GLenum(pixelFormat.toGL()), GLenum(GL_UNSIGNED_BYTE), bytes)
+        // MARK: - PR #30
+        //glTexImage2D(GLenum(GL_TEXTURE_2D), 0, GL_RGBA, size.glWidth(), size.glHeight(), 0, GLenum(pixelFormat.toGL()), GLenum(GL_UNSIGNED_BYTE), bytes)
+        glTexImage2D(GLenum(GL_TEXTURE_2D), 0, GL_RGBA, size.glWidth(), size.glHeight(), 0, GLenum(privatePixelFormat.toGL()), GLenum(GL_UNSIGNED_BYTE), bytes)
 
         updateTargetsWithFramebuffer(dataFramebuffer)
     }

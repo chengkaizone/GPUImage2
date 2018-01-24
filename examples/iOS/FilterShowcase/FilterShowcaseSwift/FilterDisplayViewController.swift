@@ -15,9 +15,9 @@ class FilterDisplayViewController: UIViewController, UISplitViewControllerDelega
     required init(coder aDecoder: NSCoder)
     {
         do {
-            videoCamera = try Camera(sessionPreset:AVCaptureSessionPreset640x480, location:.backFacing)
+            videoCamera = try Camera(sessionPreset:AVCaptureSession.Preset.vga640x480, location:.frontFacing)
             videoCamera!.runBenchmark = true
-        } catch {
+        } catch let error {
             videoCamera = nil
             print("Couldn't initialize camera with error: \(error)")
         }

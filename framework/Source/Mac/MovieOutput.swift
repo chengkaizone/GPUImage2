@@ -54,6 +54,8 @@ public class MovieOutput: ImageConsumer, AudioEncodingTarget {
     
     public func startRecording() {
         startTime = nil
+        // MARK: -
+        isRecording = true
         sharedImageProcessingContext.runOperationSynchronously{
             self.isRecording = self.assetWriter.startWriting()
         }
@@ -116,6 +118,11 @@ public class MovieOutput: ImageConsumer, AudioEncodingTarget {
         
         var pixelBufferFromPool:CVPixelBuffer? = nil
 
+        // MARK: - PR #140
+        if assetWriterPixelBufferInput.pixelBufferPool == nil {
+            return
+        }
+        
         let pixelBufferStatus = CVPixelBufferPoolCreatePixelBuffer(nil, assetWriterPixelBufferInput.pixelBufferPool!, &pixelBufferFromPool)
         guard let pixelBuffer = pixelBufferFromPool, (pixelBufferStatus == kCVReturnSuccess) else { return }
 
@@ -144,29 +151,56 @@ public class MovieOutput: ImageConsumer, AudioEncodingTarget {
         renderFramebuffer.unlock()
     }
     
-    // MARK: -
+    // MARK: - PR #140
     // MARK: Audio support
     
     public func activateAudioTrack() {
         // TODO: Add ability to set custom output settings
-        assetWriterAudioInput = AVAssetWriterInput(mediaType:AVMediaType.audio, outputSettings:nil)
-        assetWriter.add(assetWriterAudioInput!)
+//        assetWriterAudioInput = AVAssetWriterInput(mediaType:AVMediaType.audio, outputSettings:nil)
+//        assetWriter.add(assetWriterAudioInput!)
+//        assetWriterAudioInput?.expectsMediaDataInRealTime = encodingLiveVideo
+        
+        // Without output settings it was difficult to get the audio to record, this is duplicated from GPUImage 1 in Objective C.
+        let outputSettings: [String : Any] = [AVFormatIDKey: kAudioFormatMPEG4AAC, AVSampleRateKey: 48000, AVNumberOfChannelsKey: 1,AVEncoderBitRateKey: 96000]
+    
+    
+        assetWriterAudioInput = AVAssetWriterInput(mediaType:AVMediaTypeAudio, outputSettings: outputSettings)
         assetWriterAudioInput?.expectsMediaDataInRealTime = encodingLiveVideo
+        
+        if assetWriter.canAdd(assetWriterAudioInput!) {
+            assetWriter.add(assetWriterAudioInput!)
+        } else {
+            print("Cannot add audio")
+        }
     }
     
     public func processAudioBuffer(_ sampleBuffer:CMSampleBuffer) {
         guard let assetWriterAudioInput = assetWriterAudioInput else { return }
+        // MARK: - PR #140 #149
+        guard isRecording else {return}
         
         sharedImageProcessingContext.runOperationSynchronously{
             let currentSampleTime = CMSampleBufferGetOutputPresentationTimeStamp(sampleBuffer)
-            if (self.startTime == nil) {
+//            if (self.startTime == nil) {
+//                if (self.assetWriter.status != .writing) {
+//                    self.assetWriter.startWriting()
+//                }
+//
+//                self.assetWriter.startSession(atSourceTime: currentSampleTime)
+//                self.startTime = currentSampleTime
+//            }
+            
+        
+            // If you let audio start before the video you will have audio recorded on blank video frames at the beginning of a video.
+            /*if (self.startTime == nil) {
                 if (self.assetWriter.status != .writing) {
+             
                     self.assetWriter.startWriting()
                 }
-                
+             
                 self.assetWriter.startSession(atSourceTime: currentSampleTime)
                 self.startTime = currentSampleTime
-            }
+            }*/
             
             guard (assetWriterAudioInput.isReadyForMoreMediaData || (!self.encodingLiveVideo)) else {
                 return

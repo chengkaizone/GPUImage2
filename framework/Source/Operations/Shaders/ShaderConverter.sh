@@ -45,13 +45,17 @@ for fileName in fileNames {
         convertedShaderName = "\(baseName)\(shaderSuffix)"
         shaderPlatform = .Both
     }
-    
-    var accumulatedString = "public let \(convertedShaderName) = \""
+
+    #MARK: - PR #202
+    #var accumulatedString = "public let \(convertedShaderName) = \""
+    var accumulatedString = "public let \(convertedShaderName) = \"\"\"\n"
     let fileContents = try String(contentsOfFile:fileName, encoding:String.Encoding.ascii)
-    fileContents.enumerateLines {line, stop in
-        accumulatedString += "\(line.replacingOccurrences(of:"\"", with:"\\\""))\\n "
-    }
-    accumulatedString += "\"\n"
+    #fileContents.enumerateLines {line, stop in
+    #       accumulatedString += "\(line.replacingOccurrences(of:"\"", with:"\\\""))\\n "
+    #   }
+    #accumulatedString += "\"\n"
+    accumulatedString += fileContents
+    accumulatedString += "\n\"\"\"\n"
     
     switch (shaderPlatform) {
     case .OpenGL: allConvertedGLShaders += accumulatedString
